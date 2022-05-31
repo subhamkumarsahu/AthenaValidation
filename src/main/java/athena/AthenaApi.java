@@ -81,18 +81,19 @@ public class AthenaApi {
 			JSONObject json = new JSONObject();
 			json.put("db", prop.getProperty("databaseName"));
 			json.put("sql", SQL);
+			System.out.println("Request :"+ json);
 			logger.log(Status.INFO, "Test Case Execution Started");
 			logger.log(Status.INFO, "Execution started for Test Case # " + i);
 			logger.log(Status.INFO, "Test Case Name: " + TC);
 			logger.log(Status.INFO, "Generating Payload for TC: " + i);
-			logger.log(Status.INFO, "Payload for TC: " + i + " : " + json);
+			logger.log(Status.INFO, "Payload for TC " + i + " : " + json);
 
 			URL url = new URL(query_url);
 			try {
 			HttpURLConnection conn = (HttpURLConnection) url.openConnection();
 			conn.setConnectTimeout(50000);
 			conn.setRequestProperty("Content-Type", "application/json; charset=UTF-8");
-			conn.setRequestProperty("X-Amz-Security-Token",prop.getProperty("token"));
+		//	conn.setRequestProperty("X-Amz-Security-Token",prop.getProperty("token"));
 			conn.setDoOutput(true);
 			conn.setDoInput(true);
 			conn.setRequestMethod("POST");
@@ -100,12 +101,13 @@ public class AthenaApi {
 			os.write(json.toString().getBytes("UTF-8"));
 			os.close();
 			
+			
 			logger.log(Status.INFO, "Waiting for Result");
 			log.info("Waiting for Lambda Function's Response");
-
 			InputStream in = new BufferedInputStream(conn.getInputStream());
 			String result = IOUtils.toString(in);
-
+			
+			Thread.sleep(20000);
 			if (result.contains("Pass")) {
 				log.info("No Rows Populated, The records in Source and Target table are matched : PASS");
 			} else {
